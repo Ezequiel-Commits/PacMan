@@ -17,7 +17,7 @@ def main():
     
     setupWin()
     
-    """===spawn two turtles in and get rid of their pens==="""
+    """===spawn three turtles in and get rid of their pens==="""
     ghost = turtle.Turtle()
     ghost.penup()
     dingo = turtle.Turtle()
@@ -79,6 +79,7 @@ def main():
         drawer.setheading(270)
         drawer.forward(50)
         drawer.penup()
+
         window.update()
         window.tracer(True)
     
@@ -130,7 +131,8 @@ def main():
             if playerLocation[0] <= -180:
                 heading = 0
     
-    def moveGhost():
+
+    '''def moveGhost():
         nonlocal playerLocation, ghostLocation,ghost
         if playerLocation[0] > ghostLocation[0] and playerLocation[1] > ghostLocation[1]:
             #If the player is to the right and above of the ghost
@@ -171,7 +173,7 @@ def main():
         elif playerLocation[1] < ghostLocation[1]:
             #If the player is below the ghost
             ghostLocation[1] -= ghostSpeed[1]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
+            ghost.goto(ghostLocation[0],ghostLocation[1])'''
     
     def moveGhost2():
         nonlocal ghost, playerLocation
@@ -202,8 +204,10 @@ def main():
                     print("Game starting again!")
                     playerLocation[0],playerLocation[1] = 0,0
                     dingo.goto(0,0)
+                    heading = 0 
                     ghostLocation[0],ghostLocation[1] = -300,-300
-                    heading = 0 #a bug occurs when I set the heading to 0 and don't use to goto function
+                    ghost.goto(ghostLocation[0],ghostLocation[1])
+                    #Break out of the while statement
                     break
                 elif answer == "N":
                     #Close the program
