@@ -131,50 +131,6 @@ def main():
             if playerLocation[0] <= -180:
                 heading = 0
     
-
-    '''def moveGhost():
-        nonlocal playerLocation, ghostLocation,ghost
-        if playerLocation[0] > ghostLocation[0] and playerLocation[1] > ghostLocation[1]:
-            #If the player is to the right and above of the ghost
-            ghostLocation[0] += ghostSpeedDiagonally[0]
-            ghostLocation[1] += ghostSpeedDiagonally[1]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
-            
-        elif playerLocation[0] > ghostLocation[0] and playerLocation[1] < ghostLocation[1]:
-            #If the player is to the right and below of the ghost
-            ghostLocation[0] += ghostSpeedDiagonally[0]
-            ghostLocation[1] -= ghostSpeedDiagonally[1]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
-        
-        elif playerLocation[0] < ghostLocation[0] and playerLocation[1] > ghostLocation[1]:
-            #If the player is to the left and above of the ghost 
-            ghostLocation[0] -= ghostSpeedDiagonally[0]
-            ghostLocation[1] += ghostSpeedDiagonally[1]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
-            
-        elif playerLocation[0] < ghostLocation[0] and playerLocation[1] < ghostLocation[1]:
-            #If the player is to the left and below of the ghost
-            ghostLocation[0] -= ghostSpeedDiagonally[0]
-            ghostLocation[1] -= ghostSpeedDiagonally[1]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
-            
-        elif playerLocation[1] > ghostLocation[1]:
-            #If the player is above the ghost
-            ghostLocation[1] += ghostSpeed[1]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
-        elif playerLocation[0] > ghostLocation[0]:
-            #If the player is to the right of the ghost
-            ghostLocation[0] += ghostSpeed[0]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
-        elif playerLocation[0] < ghostLocation[0]:
-            #If the player is to the left of the ghost
-            ghostLocation[0] -= ghostSpeed[0]
-            ghost.goto(ghostLocation[0],ghostLocation[1])
-        elif playerLocation[1] < ghostLocation[1]:
-            #If the player is below the ghost
-            ghostLocation[1] -= ghostSpeed[1]
-            ghost.goto(ghostLocation[0],ghostLocation[1])'''
-    
     def moveGhost2():
         nonlocal ghost, playerLocation
         #Move the ghost toward the player using the setheading function
@@ -222,7 +178,7 @@ def main():
     
     drawEnvironment()
     print("Game starting, avoid the ghost for as long as you can")
-    #updateScreen() 
+    updateScreen() 
     
     """=== player keybinds==="""
     window.onkeypress(headingUp, key = "Up")
