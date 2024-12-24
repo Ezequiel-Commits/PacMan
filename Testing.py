@@ -4,7 +4,7 @@ window  = None
 WINX, WINY = 1000,1000
 
 def main():
-    def setupWin():
+    def setupWin(): 
         global window
         # making turtle object
         window = turtle.Screen()
@@ -15,7 +15,7 @@ def main():
 
     setupWin()
     # reset the coordinate system so that the bottom left is (0, 0) and the top right is (4, 4)
-    turtle.setworldcoordinates(0, 0, 4, 4)
+    turtle.setworldcoordinates(0, 0, 3, 3) # an opportunity for dry code to be implemented here 
 
     '''Definting the game using a 2d list'''
     Maze = [
@@ -33,24 +33,34 @@ def main():
     def movePlayer():
         nonlocal pacMan
 
-    def animate():
+    def animate(startingX, startingY):
         # 1. clear the current frame(Isn't relevant now.)
         pacMan.clear()
 
         # 2. update the model -- i.e. in memory state of the game via the 2d list
-        for row in Maze:
-            for column in row:
-                if Maze[row][column] == "pacMan":
-                    pacMan.goto([row][column])
+        x1 = startingX 
+        print(x1)
+        y1 = startingY 
+        print(y1)
+        Maze[x1][y1] = "pacMan"
+        #pretend that the player wants to go up
+        Maze[x1][y1] = "Empty"
+        if y1+1 > 3:
+            window.bye()
+        Maze[x1][y1+1] = "pacMan" # Implementing an if statement to stop the index from going out of range
+        
+        
+        # 3. render the next frame
+        for x in range(4):
+            for y in range(4):
+                if Maze[x][y] == "pacMan": #how to make the previous location of pacMan into "empty"? 
+                    pacMan.goto(x,y)
                     pacMan.dot(8)
-        # 3. re-render the next frame
-
-        #implement player movement now
 
         # 4. set a timer to call this function again for the next frame
-        window.ontimer(animate,1000) #hardcode some movement before looping it. 
+        window.ontimer(animate(startingX,startingY+1),100) #hardcode some movement before looping it. 
 
-    animate()
+    animate(0,0)
     #pacMan.goto(0, 2)
 
     window.mainloop()
