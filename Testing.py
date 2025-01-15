@@ -49,39 +49,46 @@ def main():
         nonlocal pacManDirection
         pacManDirection = "Left"
 
-    def updateModel():
-        #Update the maze model based on player input 
+    def movePacMan(pacManX,pacManY):
         nonlocal pacManDirection
-        for x in range(4):
-            for y in range(4):
-                if Maze[x][y] == "pacMan":
-                    pacManX = x
-                    print(pacManX)
-                    pacManY = y
-        # if pacManDirection == "none":
-        #     test2 = print(pacManDirection)
-        #     return(test2) #stop moving until another input is pressed 
         if pacManDirection == "Up": 
             #Move the player based on their input 
             Maze[pacManX][pacManY] = "Empty"
             if pacManY+1 > 3: #pacMan is too close to a wall, so stop pacMan 
-                # from moving anymore
-                pacManDirection = "none"
-                test = print(pacManX,pacManY)
-                return(test)
+                # from moving 
+                Maze[pacManX][pacManY] = "pacMan" #reassign the pacMan coordinates
+                return
             Maze[pacManX][pacManY+1] = "pacMan" 
-        # elif pacManDirection == "Down": 
-        #     #Move the player based on their input 
-        #     Maze[pacManX][pacManY] = "Empty"
-        #     if pacManY-1 < 0: #pacMan is too close to a wall, so stop pacMan 
-        #         # from moving anymore
-        #         pacManDirection = "none"
-        #         test1 = print(pacManX,pacManY)
-        #         return(test1)
-        #     Maze[pacManX][pacManY+1] = "pacMan" 
+        elif pacManDirection == "Down": 
+            Maze[pacManX][pacManY] = "Empty"
+            if pacManY-1 < 0:
+                Maze[pacManX][pacManY] = "pacMan"
+                return
+            Maze[pacManX][pacManY-1] = "pacMan"
+        elif pacManDirection == "Right": 
+            Maze[pacManX][pacManY] = "Empty"
+            if pacManX+1 > 3:
+                Maze[pacManX][pacManY] = "pacMan"
+                return
+            Maze[pacManX+1][pacManY] = "pacMan"
+        elif pacManDirection == "Left": 
+            Maze[pacManX][pacManY] = "Empty"
+            if pacManX-1 < 0:
+                Maze[pacManX][pacManY] = "pacMan"
+                return
+            Maze[pacManX-1][pacManY] = "pacMan"
+
+    def updateModel():
+        #Update the maze model based on player input 
+        for x in range(4):
+            for y in range(4):
+                if Maze[x][y] == "pacMan":
+                    pacManX = x
+                    pacManY = y
+        movePacMan(pacManX,pacManY)
 
     def render():
-        """Draw the current frame"""
+        """Draw the current frame""" 
         nonlocal Maze
         for x in range(4):
             for y in range(4):
