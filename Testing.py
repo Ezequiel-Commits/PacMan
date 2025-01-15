@@ -16,7 +16,7 @@ def main():
     setupWin()
     # reset the coordinate system so that the bottom left is (0, 0) and the top right is (4, 4)
     turtle.setworldcoordinates(0, 0, 4, 4) # an opportunity for dry code to be implemented here 
-    turtle.tracer(False)
+    turtle.tracer(False) # Make the turtle animations faster
 
     '''Definting the game using a 2d list'''
     Maze = [
@@ -33,7 +33,7 @@ def main():
     pacMan.penup()
     pacMan.speed(0)
 
-    pacManDirection = "Up" # a global variable that will allow for player movement 
+    pacManDirection = "none" # a global variable that will allow for player movement 
 
     """===functions to change the pacManDirection of the player==="""
     def pacManDirectionUp():
@@ -41,13 +41,13 @@ def main():
         pacManDirection = "Up"
     def pacManDirectionRight():
         nonlocal pacManDirection
-        pacManDirection = 2
+        pacManDirection = "Right"
     def pacManDirectionDown():
         nonlocal pacManDirection
-        pacManDirection = 3
+        pacManDirection = "Down"
     def pacManDirectionLeft():
         nonlocal pacManDirection
-        pacManDirection = 4
+        pacManDirection = "Left"
 
     def updateModel():
         #Update the maze model based on player input 
@@ -56,16 +56,29 @@ def main():
             for y in range(4):
                 if Maze[x][y] == "pacMan":
                     pacManX = x
+                    print(pacManX)
                     pacManY = y
-
-        # print("1"+pacManX,pacManY)
+        # if pacManDirection == "none":
+        #     test2 = print(pacManDirection)
+        #     return(test2) #stop moving until another input is pressed 
         if pacManDirection == "Up": 
-            #Maze[pacManX][pacManY] = "pacMan"
             #Move the player based on their input 
             Maze[pacManX][pacManY] = "Empty"
-            if pacManY+1 > 3:
-                window.bye()
+            if pacManY+1 > 3: #pacMan is too close to a wall, so stop pacMan 
+                # from moving anymore
+                pacManDirection = "none"
+                test = print(pacManX,pacManY)
+                return(test)
             Maze[pacManX][pacManY+1] = "pacMan" 
+        # elif pacManDirection == "Down": 
+        #     #Move the player based on their input 
+        #     Maze[pacManX][pacManY] = "Empty"
+        #     if pacManY-1 < 0: #pacMan is too close to a wall, so stop pacMan 
+        #         # from moving anymore
+        #         pacManDirection = "none"
+        #         test1 = print(pacManX,pacManY)
+        #         return(test1)
+        #     Maze[pacManX][pacManY+1] = "pacMan" 
 
     def render():
         """Draw the current frame"""
@@ -73,7 +86,6 @@ def main():
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pacMan": 
-                    # print("2"+x,y)
                     pacMan.goto(x,y)
                     pacMan.dot(30)
         turtle.update()
@@ -92,7 +104,7 @@ def main():
         window.ontimer(animate,1000)
 
     animate()
-    #render()
+
     """=== player keybinds==="""
     window.onkeypress(pacManDirectionUp, key = "Up")
     window.onkeypress(pacManDirectionDown, key = "Down")
