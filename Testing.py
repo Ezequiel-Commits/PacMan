@@ -24,14 +24,17 @@ def main():
         ["pacMan","empty","empty","empty"],
         ["empty","empty","empty","empty"],
         ["empty","empty","empty","empty"],
-        ["empty","empty","empty","empty"]
+        ["empty","empty","empty","ghost"]
     ]
     
 
-    #Spawn in the pacMan turtle 
+    #Spawn in the pacMan turtle and ghost turtles
     pacMan = turtle.Turtle()
     pacMan.penup()
     pacMan.speed(0)
+    ghost = turtle.Turtle()
+    ghost.penup()
+    ghost.speed(0)
 
     pacManDirection = "none" # a global variable that will allow for player movement 
 
@@ -68,6 +71,7 @@ def main():
         elif pacManDirection == "Right": 
             Maze[pacManX][pacManY] = "Empty"
             if pacManX+1 > 3:
+                print("About to hit the ghost")
                 Maze[pacManX][pacManY] = "pacMan"
                 return
             Maze[pacManX+1][pacManY] = "pacMan"
@@ -78,6 +82,16 @@ def main():
                 return
             Maze[pacManX-1][pacManY] = "pacMan"
 
+    def moveGhost(ghostX,ghostY,pacManX,pacManY):
+        if pacManY > ghostY:
+            #If the player is above the ghost
+            Maze[ghostX][ghostY] = "Empty"
+            if ghostY+1 > 3: 
+                Maze[ghostX][ghostY] = "ghost"
+                return
+            Maze[ghostX][ghostY+1] = "ghost"
+        pass
+
     def updateModel():
         #Update the maze model based on player input 
         for x in range(4):
@@ -85,7 +99,24 @@ def main():
                 if Maze[x][y] == "pacMan":
                     pacManX = x
                     pacManY = y
+        for x in range(4):
+            for y in range(4):
+                if Maze[x][y] == "ghost":
+                    ghostX = x
+                    ghostY = y
         movePacMan(pacManX,pacManY)
+        #The ghost should move based on player input as well
+        moveGhost(ghostX,ghostY,pacManX,pacManY)
+        xCoordDifference = pacManX - ghostX
+        yCoordDifference = pacManY - ghostY
+
+        if xCoordDifference == 0 and yCoordDifference == 0:
+            # Check if the player has collided with the ghost, or vice versa 
+            while True:
+                print("you've been caught!")
+
+
+
 
     def render():
         """Draw the current frame""" 
@@ -95,6 +126,11 @@ def main():
                 if Maze[x][y] == "pacMan": 
                     pacMan.goto(x,y)
                     pacMan.dot(30)
+        for x in range(4):
+            for y in range(4):
+                if Maze[x][y] == "ghost": 
+                    ghost.goto(x,y)
+                    ghost.dot(30)
         turtle.update()
 
     def animate():
