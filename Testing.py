@@ -1,3 +1,4 @@
+import time
 import turtle 
 
 window  = None
@@ -24,7 +25,7 @@ def main():
         ["pacMan","empty","empty","empty"],
         ["empty","empty","empty","empty"],
         ["empty","empty","empty","empty"],
-        ["empty","empty","empty","ghost"]
+        ["empty","empty","empty","empty"]
     ]
     
 
@@ -71,7 +72,6 @@ def main():
         elif pacManDirection == "Right": 
             Maze[pacManX][pacManY] = "Empty"
             if pacManX+1 > 3:
-                print("About to hit the ghost")
                 Maze[pacManX][pacManY] = "pacMan"
                 return
             Maze[pacManX+1][pacManY] = "pacMan"
@@ -104,16 +104,17 @@ def main():
                 if Maze[x][y] == "ghost":
                     ghostX = x
                     ghostY = y
+                    xCoordDifference = pacManX - ghostX
+                    yCoordDifference = pacManY - ghostY
+                if xCoordDifference == 0 and yCoordDifference == 0:
+                    # Check if the player has collided with the ghost, or vice versa 
+                    while True:
+                        print("you've been caught!")
+                        # Stop the program from freezing
+                        time.sleep(1)
         movePacMan(pacManX,pacManY)
         #The ghost should move based on player input as well
         moveGhost(ghostX,ghostY,pacManX,pacManY)
-        xCoordDifference = pacManX - ghostX
-        yCoordDifference = pacManY - ghostY
-
-        if xCoordDifference == 0 and yCoordDifference == 0:
-            # Check if the player has collided with the ghost, or vice versa 
-            while True:
-                print("you've been caught!")
 
 
 
