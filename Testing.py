@@ -23,7 +23,7 @@ def main():
     Maze = [
         #4 by 4 list to start
         ["pacMan","empty","empty","empty"],
-        ["empty","empty","empty","empty"],
+        ["ghost","empty","empty","empty"],
         ["empty","empty","empty","empty"],
         ["empty","empty","empty","empty"]
     ]
@@ -53,6 +53,7 @@ def main():
         nonlocal pacManDirection
         pacManDirection = "Left"
 
+    """Functions to move both the player and the ghost"""
     def movePacMan(pacManX,pacManY):
         nonlocal pacManDirection
         if pacManDirection == "Up": 
@@ -94,27 +95,37 @@ def main():
 
     def updateModel():
         #Update the maze model based on player input 
+        # print("test1")
+        ghostX, ghostY, pacManX, pacManY = None, None, None, None
+
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pacMan":
+                    # print("test2")
                     pacManX = x
                     pacManY = y
+        # Update the ghost based on the player's location
+        # print("test2.5")
+        # print(Maze[3][3])
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost":
+                    # print("test3")
                     ghostX = x
                     ghostY = y
-                    xCoordDifference = pacManX - ghostX
-                    yCoordDifference = pacManY - ghostY
-                if xCoordDifference == 0 and yCoordDifference == 0:
-                    # Check if the player has collided with the ghost, or vice versa 
-                    while True:
-                        print("you've been caught!")
-                        # Stop the program from freezing
-                        time.sleep(1)
-        movePacMan(pacManX,pacManY)
+        # xCoordDifference = pacManX - ghostX
+        # yCoordDifference = pacManY - ghostY
+        # if xCoordDifference == 0 and yCoordDifference == 0:
+        #     # Check if the player has collided with the ghost, or vice versa 
+        #     while True:
+        #         print("you've been caught!")
+        #         # Stop the program from freezing
+        #         time.sleep(1)
+        if pacManX != None and pacManY != None:
+            movePacMan(pacManX,pacManY)
         #The ghost should move based on player input as well
-        moveGhost(ghostX,ghostY,pacManX,pacManY)
+        if ghostX != None and ghostY != None:
+            moveGhost(ghostX,ghostY,pacManX,pacManY)
 
 
 
@@ -136,7 +147,8 @@ def main():
 
     def animate():
         # 1. clear the current frame(Isn't relevant now. 1/8)
-        pacMan.clear()
+        pacMan.clear() 
+        ghost.clear() # The ghost.turtle sprite stays
 
         # 2. update the model -- i.e. in memory state of the game via the 2d list
         updateModel()
