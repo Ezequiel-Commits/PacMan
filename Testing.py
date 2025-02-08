@@ -1,5 +1,6 @@
-import time
+# Import some libraries for future refernce
 import turtle 
+import wall
 
 window  = None
 WINX, WINY = 1000,1000
@@ -16,30 +17,35 @@ def main():
 
     setupWin()
     # reset the coordinate system so that the bottom left is (0, 0) and the top right is (4, 4)
-    turtle.setworldcoordinates(0, 0, 4, 4) # an opportunity for dry code to be implemented here 
+    turtle.setworldcoordinates(0, 0, 4, 4)
     turtle.tracer(False) # Make the turtle animations faster
+
 
     '''Definting the game using a 2d list'''
     Maze = [
         #4 by 4 list to start
-        ["pacMan","empty","empty","empty"],
-        ["ghost","empty","empty","empty"],
+        ["pacMan","empty","empty","wall"],
         ["empty","empty","empty","empty"],
-        ["empty","empty","empty","empty"]
+        ["empty","empty","empty","empty"],
+        ["ghost","empty","empty","empty"]
     ]
     
 
-    #Spawn in the pacMan turtle and ghost turtles
+    #Spawn in the pacMan turtle and ghost turtles, along with doing some customization for both 
     pacMan = turtle.Turtle()
     pacMan.penup()
-    pacMan.speed(0)
+    pacMan.pencolor("yellow")
+    pacMan.ht()
+
     ghost = turtle.Turtle()
     ghost.penup()
-    ghost.speed(0)
+    ghost.pencolor("blue")
+    ghost.ht()
 
     pacManDirection = "none" # a global variable that will allow for player movement 
 
-    """===functions to change the pacManDirection of the player==="""
+
+    """===functions to change the direction of the player==="""
     def pacManDirectionUp():
         nonlocal pacManDirection
         pacManDirection = "Up"
@@ -52,6 +58,7 @@ def main():
     def pacManDirectionLeft():
         nonlocal pacManDirection
         pacManDirection = "Left"
+
 
     """Functions to move both the player and the ghost"""
     def movePacMan(pacManX,pacManY):
@@ -84,18 +91,38 @@ def main():
             Maze[pacManX-1][pacManY] = "pacMan"
 
     def moveGhost(ghostX,ghostY,pacManX,pacManY):
+        """Move the ghost based on the pacMan's location"""
         if pacManY > ghostY:
-            #If the player is above the ghost
+            #If the player is above the ghost...
             Maze[ghostX][ghostY] = "Empty"
             if ghostY+1 > 3: 
                 Maze[ghostX][ghostY] = "ghost"
                 return
-            Maze[ghostX][ghostY+1] = "ghost"
-        pass
+            else: #Do I need an else statement here?
+                Maze[ghostX][ghostY+1] = "ghost"
+        elif pacManY < ghostY:
+            Maze[ghostX][ghostY] = "Empty"
+            if ghostY-1 < 0: 
+                Maze[ghostX][ghostY] = "ghost"
+                return
+            Maze[ghostX][ghostY-1] = "ghost"
+        elif pacManX > ghostX:
+            Maze[ghostX][ghostY] = "Empty"
+            if ghostX+1 > 3: 
+                Maze[ghostX][ghostY] = "ghost"
+                return
+            else: 
+                Maze[ghostX+1][ghostY] = "ghost"
+        elif pacManX < ghostX:
+            Maze[ghostX][ghostY] = "Empty"
+            if ghostX-1 < 0: 
+                Maze[ghostX][ghostY] = "ghost"
+                return
+            Maze[ghostX-1][ghostY] = "ghost"
+
 
     def updateModel():
-        #Update the maze model based on player input 
-        # print("test1")
+        """Update the maze model based on player input """
         ghostX, ghostY, pacManX, pacManY = None, None, None, None
 
         for x in range(4):
@@ -104,49 +131,49 @@ def main():
                     # print("test2")
                     pacManX = x
                     pacManY = y
-        # Update the ghost based on the player's location
-        # print("test2.5")
-        # print(Maze[3][3])
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost":
-                    # print("test3")
+                    print(x,y)
                     ghostX = x
                     ghostY = y
-        # xCoordDifference = pacManX - ghostX
-        # yCoordDifference = pacManY - ghostY
-        # if xCoordDifference == 0 and yCoordDifference == 0:
-        #     # Check if the player has collided with the ghost, or vice versa 
-        #     while True:
-        #         print("you've been caught!")
-        #         # Stop the program from freezing
-        #         time.sleep(1)
+        
+        # If the pacMan has collided with a ghost, one of their coordinates should be wiped, and 
+        # the move function should not run for that character. 
         if pacManX != None and pacManY != None:
             movePacMan(pacManX,pacManY)
-        #The ghost should move based on player input as well
-        if ghostX != None and ghostY != None:
+        
+        if ghostX != None and ghostY != None and pacManX != None and pacManY != None:
             moveGhost(ghostX,ghostY,pacManX,pacManY)
-
-
-
 
     def render():
         """Draw the current frame""" 
         nonlocal Maze
+        # render pacMan
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pacMan": 
                     pacMan.goto(x,y)
                     pacMan.dot(30)
+        # render the ghost
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost": 
                     ghost.goto(x,y)
                     ghost.dot(30)
+        # render the walls
+        for x in range(4):
+            for y in range(4):
+                if Maze[x][y] == "wall":
+                    newWall = wall.Wall(x,y)
+                    newWall.move()
+                    newWall.drawDot(20)
         turtle.update()
 
     def animate():
-        # 1. clear the current frame(Isn't relevant now. 1/8)
+        """animate the screen"""
+
+        # 1. clear the current frame
         pacMan.clear() 
         ghost.clear() # The ghost.turtle sprite stays
 
@@ -166,6 +193,8 @@ def main():
     window.onkeypress(pacManDirectionDown, key = "Down")
     window.onkeypress(pacManDirectionRight, key = "Right")
     window.onkeypress(pacManDirectionLeft, key = "Left")
+
+    # Listen for player input 
     window.listen()
 
     window.mainloop()
