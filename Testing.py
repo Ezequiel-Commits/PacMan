@@ -1,6 +1,7 @@
 # Import some libraries for future refernce
 import turtle 
 import wall
+import graph
 
 window  = None
 WINX, WINY = 1000,1000
@@ -24,13 +25,12 @@ def main():
     '''Definting the game using a 2d list'''
     Maze = [
         #4 by 4 list to start
-        ["pacMan","empty","empty","wall"],
-        ["empty","empty","empty","empty"],
-        ["empty","empty","empty","empty"],
+        ["pacMan","empty","empty","empty"],
+        ["empty","empty","wall","empty"],
+        ["empty","empty","wall","empty"],
         ["ghost","empty","empty","empty"]
     ]
     
-
     #Spawn in the pacMan turtle and ghost turtles, along with doing some customization for both 
     pacMan = turtle.Turtle()
     pacMan.penup()
@@ -64,65 +64,55 @@ def main():
     def movePacMan(pacManX,pacManY):
         nonlocal pacManDirection
         if pacManDirection == "Up": 
+
             #Move the player based on their input 
-            Maze[pacManX][pacManY] = "Empty"
-            if pacManY+1 > 3: #pacMan is too close to a wall, so stop pacMan 
-                # from moving 
+            Maze[pacManX][pacManY] = "empty"
+            if pacManY+1 > 3 or Maze[pacManX][pacManY+1] == "wall": #pacMan is too close to a wall, so stop pacMan from moving 
                 Maze[pacManX][pacManY] = "pacMan" #reassign the pacMan coordinates
                 return
             Maze[pacManX][pacManY+1] = "pacMan" 
         elif pacManDirection == "Down": 
-            Maze[pacManX][pacManY] = "Empty"
-            if pacManY-1 < 0:
+
+            Maze[pacManX][pacManY] = "empty"
+            if pacManY-1 < 0 or Maze[pacManX][pacManY-1] == "wall":
                 Maze[pacManX][pacManY] = "pacMan"
                 return
             Maze[pacManX][pacManY-1] = "pacMan"
         elif pacManDirection == "Right": 
-            Maze[pacManX][pacManY] = "Empty"
-            if pacManX+1 > 3:
+
+            Maze[pacManX][pacManY] = "empty"
+            if pacManX+1 > 3 or Maze[pacManX+1][pacManY] == "wall":
                 Maze[pacManX][pacManY] = "pacMan"
                 return
             Maze[pacManX+1][pacManY] = "pacMan"
         elif pacManDirection == "Left": 
-            Maze[pacManX][pacManY] = "Empty"
-            if pacManX-1 < 0:
+
+            Maze[pacManX][pacManY] = "empty"
+            if pacManX-1 < 0 or Maze[pacManX-1][pacManY] == "wall":
                 Maze[pacManX][pacManY] = "pacMan"
                 return
             Maze[pacManX-1][pacManY] = "pacMan"
 
+    """Move the ghost based on the pacMan's location"""
     def moveGhost(ghostX,ghostY,pacManX,pacManY):
-        """Move the ghost based on the pacMan's location"""
-        if pacManY > ghostY:
-            #If the player is above the ghost...
-            Maze[ghostX][ghostY] = "Empty"
-            if ghostY+1 > 3: 
-                Maze[ghostX][ghostY] = "ghost"
-                return
-            else: #Do I need an else statement here?
-                Maze[ghostX][ghostY+1] = "ghost"
-        elif pacManY < ghostY:
-            Maze[ghostX][ghostY] = "Empty"
-            if ghostY-1 < 0: 
-                Maze[ghostX][ghostY] = "ghost"
-                return
-            Maze[ghostX][ghostY-1] = "ghost"
-        elif pacManX > ghostX:
-            Maze[ghostX][ghostY] = "Empty"
-            if ghostX+1 > 3: 
-                Maze[ghostX][ghostY] = "ghost"
-                return
-            else: 
-                Maze[ghostX+1][ghostY] = "ghost"
-        elif pacManX < ghostX:
-            Maze[ghostX][ghostY] = "Empty"
-            if ghostX-1 < 0: 
-                Maze[ghostX][ghostY] = "ghost"
-                return
-            Maze[ghostX-1][ghostY] = "ghost"
+        myGhostTracking = graph.Graph(4) #Unit testing
 
+        # Not sure how this will match up with the maze 
+        myGhostTracking.add_vertex_data(0, 'A')
+        myGhostTracking.add_vertex_data(1, 'B')
+        myGhostTracking.add_vertex_data(2, 'C')
+        myGhostTracking.add_vertex_data(3, 'D')
 
+        myGhostTracking.add_edge(0, 1, 1)  # A - B, weight 1
+        myGhostTracking.add_edge(0, 2, 2)  # A - C, weight 2
+        myGhostTracking.add_edge(0, 3, 3)  # A - D, weight 3
+
+        distances = myGhostTracking.dijkstra('A')
+        for i, a in enumerate(distances): #I don't completely understand this 
+            print(f"Shortest distance from A to {myGhostTracking.vertex_data[i]}: {a}")
+
+    """Update the maze model based on player input """
     def updateModel():
-        """Update the maze model based on player input """
         ghostX, ghostY, pacManX, pacManY = None, None, None, None
 
         for x in range(4):
@@ -131,10 +121,12 @@ def main():
                     # print("test2")
                     pacManX = x
                     pacManY = y
+                # else: 
+                #     print("You died")
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost":
-                    print(x,y)
+                    # print(x,y)
                     ghostX = x
                     ghostY = y
         
@@ -146,8 +138,8 @@ def main():
         if ghostX != None and ghostY != None and pacManX != None and pacManY != None:
             moveGhost(ghostX,ghostY,pacManX,pacManY)
 
+    """Draw the current frame""" 
     def render():
-        """Draw the current frame""" 
         nonlocal Maze
         # render pacMan
         for x in range(4):
@@ -170,8 +162,8 @@ def main():
                     newWall.drawDot(20)
         turtle.update()
 
+    """animate the screen using a model-view paradigm """
     def animate():
-        """animate the screen"""
 
         # 1. clear the current frame
         pacMan.clear() 
@@ -188,12 +180,17 @@ def main():
 
     animate()
 
+    """A function to print out the maze layout"""
+    def printMaze():
+        print(Maze)
+
+
     """=== player keybinds==="""
     window.onkeypress(pacManDirectionUp, key = "Up")
     window.onkeypress(pacManDirectionDown, key = "Down")
     window.onkeypress(pacManDirectionRight, key = "Right")
     window.onkeypress(pacManDirectionLeft, key = "Left")
-
+    window.onkeypress(printMaze, key = "t")
     # Listen for player input 
     window.listen()
 

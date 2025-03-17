@@ -1,9 +1,7 @@
-"""A class that encapsulates the creation of walls"""
-# Import some libraries for later use 
+"""A class that encapsulates the pellets that the PacMan will eat to gain points"""
 import turtle
 
-# Create a class called "Wall"
-class Wall:
+class Pellet:
     def __init__(self,x,y):
         self.x = x
         self.y = y
@@ -19,4 +17,3 @@ class Wall:
     def drawDot(self, dotSize):
         # replace the basic dot function 
         self.turt.dot(dotSize)
-        
