@@ -95,7 +95,7 @@ def main():
             Maze[pacManX-1][pacManY] = "pacMan"
 
     """Move the ghost based on the pacMan's location"""
-    def moveGhost(ghostX,ghostY,pacManX,pacManY):
+    def moveGhost(ghostX,ghostY,pacManX,pacManY): #Do I implement Dijkstra's algorithm here? 
         if pacManY > ghostY:
 
             #If the player is above the ghost...
@@ -176,14 +176,14 @@ def main():
                 if Maze[x][y] == "wall":
                     newWall = wall.Wall(x,y)
                     newWall.move()
-                    newWall.drawDot(20)
+                    newWall.updateSelf(20)
         # render the pellets
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pellet": 
                     newPellet = pellet.Pellet(x,y)
                     newPellet.move()
-                    newPellet.drawDot(10)
+                    newPellet.updateSelf(10)
         turtle.update()
 
     """animate the screen using a model-view paradigm """

@@ -1,5 +1,6 @@
 # Import some libraries for future refernce
 import turtle 
+import pellet
 import wall
 import graph
 
@@ -25,9 +26,9 @@ def main():
     '''Definting the game using a 2d list'''
     Maze = [
         #4 by 4 list to start
-        ["pacMan","empty","empty","empty"],
+        ["pacMan","pellet","pellet","pellet"],
         ["empty","empty","wall","empty"],
-        ["empty","empty","wall","empty"],
+        ["empty","empty","wall","pellet"],
         ["ghost","empty","empty","empty"]
     ]
     
@@ -94,22 +95,30 @@ def main():
             Maze[pacManX-1][pacManY] = "pacMan"
 
     """Move the ghost based on the pacMan's location"""
-    def moveGhost(ghostX,ghostY,pacManX,pacManY):
-        myGhostTracking = graph.Graph(4) #Unit testing
+    def moveGhost(ghostX,ghostY,pacManX,pacManY): # Do I implement Dijkstra's algorithm here? 
+        # Create a graph of size 4
+        myGhostGraph = graph.Graph(4) 
+        # To make sure this works, I'll need an end with multiple paths to it, no? 
+        # Say I get the shortest path to the pacMan. How can I get the ghost to follow that path? 
 
-        # Not sure how this will match up with the maze 
-        myGhostTracking.add_vertex_data(0, 'A')
-        myGhostTracking.add_vertex_data(1, 'B')
-        myGhostTracking.add_vertex_data(2, 'C')
-        myGhostTracking.add_vertex_data(3, 'D')
+        # Create vertexes in a graph that represent different tiles on the screen
+        myGhostGraph.add_vertex_data(0, 'A')
+        myGhostGraph.add_vertex_data(1, 'B')
+        myGhostGraph.add_vertex_data(2, 'C')
+        myGhostGraph.add_vertex_data(3, 'D')
 
-        myGhostTracking.add_edge(0, 1, 1)  # A - B, weight 1
-        myGhostTracking.add_edge(0, 2, 2)  # A - C, weight 2
-        myGhostTracking.add_edge(0, 3, 3)  # A - D, weight 3
+        # Define edges that serve as the "time" between two vertexes.
+        myGhostGraph.add_edge(0, 1, 1)  # A - B, weight 1
+        myGhostGraph.add_edge(0, 2, 2)  # A - C, weight 2
+        myGhostGraph.add_edge(0, 3, 3)  # A - D, weight 3
 
-        distances = myGhostTracking.dijkstra('A')
-        for i, a in enumerate(distances): #I don't completely understand this 
-            print(f"Shortest distance from A to {myGhostTracking.vertex_data[i]}: {a}")
+        #Run Dijkstra's algorithm on the graph defined above and store it in a variable
+        distances = myGhostGraph.dijkstra(start_vertex_data = 'A')
+        # I don't completely understand this for loop usage
+        for i, a in enumerate(distances): 
+            # I've somehow gotten the 
+            print(f"Shortest distance from A to {myGhostGraph.vertex_data[i]}: {a}")
+            
 
     """Update the maze model based on player input """
     def updateModel():
@@ -135,8 +144,8 @@ def main():
         if pacManX != None and pacManY != None:
             movePacMan(pacManX,pacManY)
         
-        if ghostX != None and ghostY != None and pacManX != None and pacManY != None:
-            moveGhost(ghostX,ghostY,pacManX,pacManY)
+        # if ghostX != None and ghostY != None and pacManX != None and pacManY != None:
+        #     moveGhost(ghostX,ghostY,pacManX,pacManY)
 
     """Draw the current frame""" 
     def render():
@@ -159,7 +168,14 @@ def main():
                 if Maze[x][y] == "wall":
                     newWall = wall.Wall(x,y)
                     newWall.move()
-                    newWall.drawDot(20)
+                    newWall.updateSelf(20)
+        # render the pellets
+        for x in range(4):
+            for y in range(4):
+                if Maze[x][y] == "pellet": 
+                    newPellet = pellet.Pellet(x,y)
+                    newPellet.move()
+                    newPellet.updateSelf(10)
         turtle.update()
 
     """animate the screen using a model-view paradigm """

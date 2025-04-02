@@ -2,6 +2,7 @@
 import turtle
 
 class Pellet:
+    # Insert inheritance syntax
     def __init__(self,x,y):
         self.x = x
         self.y = y
@@ -14,6 +15,12 @@ class Pellet:
         self.turt.goto(self.x,self.y)
         self.turt.pendown()
 
-    def drawDot(self, dotSize):
+    def updateSelf(self, dotSize):
         # replace the basic dot function 
         self.turt.dot(dotSize)
+    
+    def undraw(self):
+        self.turt.clear()
+    
+
+    

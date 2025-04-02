@@ -16,7 +16,7 @@ class Wall:
         self.turt.goto(self.x,self.y)
         self.turt.pendown()
 
-    def drawDot(self, dotSize):
+    def updateSelf(self, dotSize):
         # replace the basic dot function 
         self.turt.dot(dotSize)
         
