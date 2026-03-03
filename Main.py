@@ -157,6 +157,7 @@ def main():
 
     """Draw the current frame""" 
     def render():
+        # render all sprites in the game 
         nonlocal Maze
         # render pacMan
         for x in range(4):
@@ -181,9 +182,12 @@ def main():
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pellet": 
-                    newPellet = pellet.Pellet(x,y)
-                    newPellet.move()
-                    newPellet.updateSelf(10)
+                    # Encapsulate the pellets in a list to make deleting them easier(as of 3/3/26 this section is still causing issues. Unsure if I want to use inheritance or not)
+                    pelletList = []
+                    newPellet = pellet.Pellet()
+                    pelletList.append(newPellet)
+                    newPellet.updateSelf()
+                    # When are the pellets deleted?
         turtle.update()
 
     """animate the screen using a model-view paradigm """

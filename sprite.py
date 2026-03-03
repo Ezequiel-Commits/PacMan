@@ -1,17 +1,17 @@
-# A superclass for all sprites(pacMan, ghost, pellets, walls, etc.) in the game
+"""A superclass for all sprites(pacMan, ghost, pellets, walls, etc.) in the game"""
+import turtle
 
-class sprite:
-    def __init__(self, x, y, size = 10):
-        self.x = x
-        self.y = y
+class Sprite:
+    def __init__(self, size = 10):
         self.size = size
+        self.turtle = turtle.Turtle()
+        self.turtle.penup()
+        self.turtle.ht()
     
-    def draw(self):
-        pass
+    def draw(self, x = 0, y = 0):
+        self.turtle.goto(x, y)
+        self.turtle.dot(self.size)
 
     def undraw(self):
-        pass
-
-    def drawBoundingCircle(self):
-        pass
+        self.turtle.clear()
     
