@@ -4,14 +4,14 @@ import turtle
 class Sprite:
     def __init__(self, size = 10):
         self.size = size
-        self.turtle = turtle.Turtle()
-        self.turtle.penup()
-        self.turtle.ht()
+        self.turt = turtle.Turtle()
+        self.turt.penup()
+        self.turt.ht()
     
     def draw(self, x = 0, y = 0):
-        self.turtle.goto(x, y)
-        self.turtle.dot(self.size)
+        self.turt.goto(x, y)
+        self.turt.dot(self.size)
 
     def undraw(self):
-        self.turtle.clear()
+        self.turt.clear()
     

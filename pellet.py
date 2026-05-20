@@ -3,11 +3,23 @@ import turtle
 import sprite
 
 class Pellet(sprite.Sprite):
-    # Use the sprite constructor
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        self.size = 10
+        self.turt = turtle.Turtle()
+        self.turt.ht()
+        self.turt.penup()
+    
+    def move(self):
+        # replace the basic goTo function 
+        self.turt.goto(self.x,self.y)
 
     def updateSelf(self):
-        self.x, self.y = turtle.position()
-        self.draw(self.x, self.y)
+        # self.x, self.y = turtle.position()
+        # self.turt.goto(self.x,self.y)
+        self.turt.pendown()
+        self.turt.dot(self.size)
     
 
     

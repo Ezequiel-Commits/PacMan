@@ -6,8 +6,9 @@ class PacMan(sprite.Sprite):
     def __init__(self, size = 20):
         # Use the superClass constructor, with one small change
         sprite.Sprite.__init__(self, size)
-        self.turtle.pencolor("yellow")
-
+        self.turt.pencolor("yellow")
+        self.x = self.turt.xcor()
+        self.y = self.turt.ycor()
     
     def updateSelf(self, x, y):
         sprite.Sprite.draw(x, y)

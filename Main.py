@@ -2,6 +2,8 @@
 import turtle 
 import pellet
 import wall
+import collisionManager
+import pacMan
 
 window  = None
 WINX, WINY = 1000,1000
@@ -25,18 +27,16 @@ def main():
     '''Definting the game using a 2d list'''
     Maze = [
         #4 by 4 list to start
-        ["pacMan","pellet","pellet","pellet"],
+        ["pacMan","empty","empty","empty"],
         ["empty","empty","wall","empty"],
-        ["empty","empty","wall","pellet"],
-        ["ghost","empty","empty","empty"]
+        ["empty","empty","wall","empty"],
+        ["empty","empty","empty","empty"]
     ]
     
-
+    spriteList = []
     #Spawn in the pacMan turtle and ghost turtles, along with doing some customization for both 
-    pacMan = turtle.Turtle()
-    pacMan.penup()
-    pacMan.pencolor("yellow")
-    pacMan.ht()
+    myPacMan = pacMan.PacMan()
+    spriteList.append(myPacMan)
 
     ghost = turtle.Turtle()
     ghost.penup()
@@ -135,17 +135,21 @@ def main():
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pacMan":
-                    # print("test2")
+                    # Assign the x/y values here? 
                     pacManX = x
-                    pacManY = y
-                # else: 
-                #     print("You died")
+                    pacManY = y 
+                else:
+                    # print("You died")
+                    # add replayability here? 
+                    break
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost":
                     # print(x,y)
                     ghostX = x
                     ghostY = y
+                else:
+                    pass
         
         # If the pacMan has collided with a ghost, one of their coordinates should be wiped, and 
         # the move function should not run for that character. 
@@ -163,8 +167,8 @@ def main():
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pacMan": 
-                    pacMan.goto(x,y)
-                    pacMan.dot(30)
+                    myPacMan.turt.goto(x,y)
+                    myPacMan.turt.dot(30)
         # render the ghost
         for x in range(4):
             for y in range(4):
@@ -183,18 +187,18 @@ def main():
             for y in range(4):
                 if Maze[x][y] == "pellet": 
                     # Encapsulate the pellets in a list to make deleting them easier(as of 3/3/26 this section is still causing issues. Unsure if I want to use inheritance or not)
-                    pelletList = []
-                    newPellet = pellet.Pellet()
-                    pelletList.append(newPellet)
+                    newPellet = pellet.Pellet(x,y)
+                    newPellet.move()
                     newPellet.updateSelf()
-                    # When are the pellets deleted?
+                    spriteList.append(newPellet)
+                    # When are the pellets deleted? Am I overadding pellets? 
         turtle.update()
 
     """animate the screen using a model-view paradigm """
     def animate():
 
         # 1. clear the current frame
-        pacMan.clear() 
+        myPacMan.undraw() 
         ghost.clear() # The ghost.turtle sprite stays
 
         # 2. update the model -- i.e. in memory state of the game via the 2d list
@@ -203,7 +207,11 @@ def main():
         # 3. render the next frame
         render()
 
-        # 4. set a timer to call this function again for the next frame
+        # 4. check for collisions
+        # checkForCollisions = collisionManager.CollisionManager(spriteList)
+        # checkForCollisions.checkCollisions()
+
+        # 5. set a timer to call this function again for the next frame
         window.ontimer(animate,1000)
 
     animate()
