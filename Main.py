@@ -4,6 +4,8 @@ import pellet
 import wall
 import collisionManager
 import pacMan
+import sprite
+import numbers
 
 window  = None
 WINX, WINY = 1000,1000
@@ -27,21 +29,29 @@ def main():
     '''Definting the game using a 2d list'''
     Maze = [
         #4 by 4 list to start
-        ["pacMan","empty","empty","empty"],
+        ["pacMan","pellet","empty","empty"],
         ["empty","empty","wall","empty"],
-        ["empty","empty","wall","empty"],
-        ["empty","empty","empty","empty"]
+        ["empty","pellet","wall","pellet"],
+        ["empty","empty","empty","ghost"]
     ]
     
     spriteList = []
     #Spawn in the pacMan turtle and ghost turtles, along with doing some customization for both 
     myPacMan = pacMan.PacMan()
+    myPacMan.score = 0
     spriteList.append(myPacMan)
 
     ghost = turtle.Turtle()
     ghost.penup()
     ghost.pencolor("blue")
     ghost.ht()
+
+    scoreTracker = sprite.Sprite()
+    scoreTracker.turt.goto(3,3)
+    scoreTracker.turt.left(90)
+    scoreTracker.turt.pendown()
+    # How to get the turt to display the score numerically? Would I have to have a module for directions to draw each number? 
+    numbers.draw2(scoreTracker.turt)
 
     pacManDirection = "none" # a global variable that will allow for player movement 
 
@@ -62,7 +72,7 @@ def main():
 
 
     """Functions to move both the player and the ghost"""
-    def movePacMan(pacManX,pacManY):
+    def movePacMan(pacManX,pacManY): #Another condition to accomodate pellets?
         nonlocal pacManDirection
         if pacManDirection == "Up": 
 
@@ -71,6 +81,14 @@ def main():
             if pacManY+1 > 3 or Maze[pacManX][pacManY+1] == "wall": #pacMan is too close to a wall, so stop pacMan from moving 
                 Maze[pacManX][pacManY] = "pacMan" #reassign the pacMan coordinates
                 return
+            elif Maze[pacManX][pacManY+1] == "pellet":
+            # delete the turtle + drawing of the pellet
+                for turtle in window.turtles():
+                    turtle.clear()
+                # add 1 to the pacman's pellet score 
+                myPacMan.score += 1
+                # move the pacman to 1 unit right 
+                pass
             Maze[pacManX][pacManY+1] = "pacMan" 
         elif pacManDirection == "Down": 
 
@@ -78,13 +96,29 @@ def main():
             if pacManY-1 < 0 or Maze[pacManX][pacManY-1] == "wall":
                 Maze[pacManX][pacManY] = "pacMan"
                 return
+            elif Maze[pacManX][pacManY-1] == "pellet":
+            # delete the turtle + drawing of the pellet
+                for turtle in window.turtles():
+                    turtle.clear()
+                # add 1 to the pacman's pellet score 
+                myPacMan.score += 1
+                # move the pacman to 1 unit right 
+                pass
             Maze[pacManX][pacManY-1] = "pacMan"
         elif pacManDirection == "Right": 
 
-            Maze[pacManX][pacManY] = "empty"
+            Maze[pacManX][pacManY] = "empty" # Unit testing 
             if pacManX+1 > 3 or Maze[pacManX+1][pacManY] == "wall":
                 Maze[pacManX][pacManY] = "pacMan"
                 return
+            elif Maze[pacManX+1][pacManY] == "pellet":
+                # delete the turtle + drawing of the pellet
+                for turtle in window.turtles():
+                    turtle.clear()
+                # add 1 to the pacman's pellet score 
+                myPacMan.score += 1
+                # move the pacman to 1 unit right 
+                pass
             Maze[pacManX+1][pacManY] = "pacMan"
         elif pacManDirection == "Left": 
 
@@ -92,10 +126,18 @@ def main():
             if pacManX-1 < 0 or Maze[pacManX-1][pacManY] == "wall":
                 Maze[pacManX][pacManY] = "pacMan"
                 return
+            elif Maze[pacManX-1][pacManY] == "pellet":
+            # delete the turtle + drawing of the pellet
+                for turtle in window.turtles():
+                    turtle.clear()
+                # add 1 to the pacman's pellet score 
+                myPacMan.score += 1
+                # move the pacman to 1 unit right 
+                pass
             Maze[pacManX-1][pacManY] = "pacMan"
 
     """Move the ghost based on the pacMan's location"""
-    def moveGhost(ghostX,ghostY,pacManX,pacManY): #Do I implement Dijkstra's algorithm here? 
+    def moveGhost(ghostX,ghostY,pacManX,pacManY): #Another condition to accomodate pellets? 
         if pacManY > ghostY:
 
             #If the player is above the ghost...
@@ -108,14 +150,14 @@ def main():
         elif pacManY < ghostY:
 
             Maze[ghostX][ghostY] = "empty"
-            if ghostY-1 < 0: 
+            if ghostY-1 < 0 or Maze[ghostX][ghostY-1] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
             Maze[ghostX][ghostY-1] = "ghost"
         elif pacManX > ghostX:
 
             Maze[ghostX][ghostY] = "empty"
-            if ghostX+1 > 3: 
+            if ghostX+1 > 3 or Maze[ghostX+1][ghostY] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
             else: 
@@ -123,7 +165,7 @@ def main():
         elif pacManX < ghostX:
 
             Maze[ghostX][ghostY] = "empty"
-            if ghostX-1 < 0: 
+            if ghostX-1 < 0 or Maze[ghostX-1][ghostY] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
             Maze[ghostX-1][ghostY] = "ghost"
@@ -138,18 +180,12 @@ def main():
                     # Assign the x/y values here? 
                     pacManX = x
                     pacManY = y 
-                else:
-                    # print("You died")
-                    # add replayability here? 
-                    break
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost":
                     # print(x,y)
                     ghostX = x
                     ghostY = y
-                else:
-                    pass
         
         # If the pacMan has collided with a ghost, one of their coordinates should be wiped, and 
         # the move function should not run for that character. 
@@ -190,7 +226,7 @@ def main():
                     newPellet = pellet.Pellet(x,y)
                     newPellet.move()
                     newPellet.updateSelf()
-                    spriteList.append(newPellet)
+                    
                     # When are the pellets deleted? Am I overadding pellets? 
         turtle.update()
 
@@ -201,15 +237,15 @@ def main():
         myPacMan.undraw() 
         ghost.clear() # The ghost.turtle sprite stays
 
+        # 4. check for collisions
+        checkForCollisions = collisionManager.CollisionManager(spriteList)
+        checkForCollisions.checkCollisions()
+
         # 2. update the model -- i.e. in memory state of the game via the 2d list
         updateModel()
         
         # 3. render the next frame
         render()
-
-        # 4. check for collisions
-        # checkForCollisions = collisionManager.CollisionManager(spriteList)
-        # checkForCollisions.checkCollisions()
 
         # 5. set a timer to call this function again for the next frame
         window.ontimer(animate,1000)

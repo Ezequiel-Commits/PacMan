@@ -4,7 +4,7 @@ import sprite
 
 class PacMan(sprite.Sprite):
     def __init__(self, size = 20):
-        # Use the superClass constructor, with one small change
+        # Use the superClass constructor, with some changes.
         sprite.Sprite.__init__(self, size)
         self.turt.pencolor("yellow")
         self.x = self.turt.xcor()

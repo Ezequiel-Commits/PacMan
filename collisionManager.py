@@ -6,7 +6,7 @@ import pellet
 class CollisionManager:
     def __init__(self, spriteList):
         self.spriteList = spriteList
-        print(self.spriteList)
+        # print(self.spriteList)
     
     def checkCollisions(self):
         
@@ -24,10 +24,12 @@ class CollisionManager:
                         if isinstance(sprite1, pellet.Pellet) and isinstance(sprite2, pacMan.PacMan):
                             # Remove the sprite's drawing and the remove the sprite from the spriteList
                             sprite1.undraw()
+                            print("collision1")
                             self.spriteList.remove( sprite1 )
                         elif isinstance(sprite1, pacMan.PacMan) and isinstance(sprite2, pellet.Pellet):
                             # Even after being undrawn, the pellets redraw themselves because they're still part of the 2d list in the main file. 
                             sprite2.undraw()
+                            print("collision2")
                             self.spriteList.remove( sprite2 )
                         else:
                             pass

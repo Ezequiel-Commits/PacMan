@@ -4,12 +4,10 @@ import sprite
 
 class Pellet(sprite.Sprite):
     def __init__(self,x,y):
+        sprite.Sprite.__init__(self, size = 10)
         self.x = x
         self.y = y
-        self.size = 10
-        self.turt = turtle.Turtle()
-        self.turt.ht()
-        self.turt.penup()
+        
     
     def move(self):
         # replace the basic goTo function 
