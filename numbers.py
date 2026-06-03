@@ -6,11 +6,9 @@ def draw1(turt):
 
 def draw2(turt):
     distance = .1
-    print("1)")
-    turt.penup()
-    turt.forward(.2)
-    turt.pendown()
-    print("2)")
+    # turt.penup()
+    # turt.forward(.2)
+    # turt.pendown()
     turt.right(90)
     turt.forward(distance)
     turt.right(90)
@@ -22,8 +20,23 @@ def draw2(turt):
     turt.left(90)
     turt.forward(distance)
 
-def draw3():
-    pass
+def draw3(turt):
+    distance = .1
+    # turt.penup()
+    # turt.forward(.2)
+    # turt.pendown()
+    turt.right(90)
+    turt.forward(distance)
+    turt.right(90)
+    turt.forward(distance)
+    turt.right(90)
+    turt.forward(distance)
+    turt.left(180)
+    turt.forward(distance)
+    turt.right(90)
+    turt.forward(distance)
+    turt.right(90)
+    turt.forward(distance)
 
 def draw4():
     pass

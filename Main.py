@@ -47,11 +47,19 @@ def main():
     ghost.ht()
 
     scoreTracker = sprite.Sprite()
-    scoreTracker.turt.goto(3,3)
-    scoreTracker.turt.left(90)
-    scoreTracker.turt.pendown()
-    # How to get the turt to display the score numerically? Would I have to have a module for directions to draw each number? 
-    numbers.draw2(scoreTracker.turt)
+    
+    def updateScore(score):
+        scoreTracker.turt.penup()
+        scoreTracker.turt.goto(3.5,3.5)
+        scoreTracker.turt.pendown()
+        scoreTracker.turt.setheading(90)
+        # check the score parameter
+        if score == 1:
+            numbers.draw1(scoreTracker.turt)
+        elif score == 2:
+            numbers.draw2(scoreTracker.turt)
+        elif score == 3:
+            numbers.draw3(scoreTracker.turt)
 
     pacManDirection = "none" # a global variable that will allow for player movement 
 
@@ -87,6 +95,7 @@ def main():
                     turtle.clear()
                 # add 1 to the pacman's pellet score 
                 myPacMan.score += 1
+                updateScore(myPacMan.score)
                 # move the pacman to 1 unit right 
                 pass
             Maze[pacManX][pacManY+1] = "pacMan" 
@@ -102,6 +111,7 @@ def main():
                     turtle.clear()
                 # add 1 to the pacman's pellet score 
                 myPacMan.score += 1
+                updateScore(myPacMan.score)
                 # move the pacman to 1 unit right 
                 pass
             Maze[pacManX][pacManY-1] = "pacMan"
@@ -117,6 +127,7 @@ def main():
                     turtle.clear()
                 # add 1 to the pacman's pellet score 
                 myPacMan.score += 1
+                updateScore(myPacMan.score)
                 # move the pacman to 1 unit right 
                 pass
             Maze[pacManX+1][pacManY] = "pacMan"
@@ -132,6 +143,7 @@ def main():
                     turtle.clear()
                 # add 1 to the pacman's pellet score 
                 myPacMan.score += 1
+                updateScore(myPacMan.score)
                 # move the pacman to 1 unit right 
                 pass
             Maze[pacManX-1][pacManY] = "pacMan"
@@ -145,14 +157,17 @@ def main():
             if ghostY+1 > 3 or Maze[ghostX][ghostY+1] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
-            else: #Do I need an else statement here?
-                Maze[ghostX][ghostY+1] = "ghost"
+            # elif Maze[ghostX][ghostY+1] == "pellet":
+            #     Maze[ghostX][ghostY+1] = "pellet"
+            Maze[ghostX][ghostY+1] = "ghost"
         elif pacManY < ghostY:
 
             Maze[ghostX][ghostY] = "empty"
             if ghostY-1 < 0 or Maze[ghostX][ghostY-1] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
+            # elif Maze[ghostX][ghostY+1] == "pellet":
+            #     Maze[ghostX][ghostY-1] = "pellet"
             Maze[ghostX][ghostY-1] = "ghost"
         elif pacManX > ghostX:
 
@@ -160,13 +175,16 @@ def main():
             if ghostX+1 > 3 or Maze[ghostX+1][ghostY] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
-            else: 
-                Maze[ghostX+1][ghostY] = "ghost"
+            Maze[ghostX+1][ghostY] = "ghost"
         elif pacManX < ghostX:
 
             Maze[ghostX][ghostY] = "empty"
             if ghostX-1 < 0 or Maze[ghostX-1][ghostY] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
+                return
+            elif Maze[ghostX-1][ghostY] == "pellet":
+                Maze[ghostX-1][ghostY] = "pellet"
+                # Not sure how to get around this issue. Even with lots of if statements(which would be bad code imo), I'm not sure I'd get it to work the way I want to. 
                 return
             Maze[ghostX-1][ghostY] = "ghost"
 
