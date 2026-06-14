@@ -6,15 +6,9 @@ def draw1(turt):
 
 def draw2(turt):
     distance = .1
-    # turt.penup()
-    # turt.forward(.2)
-    # turt.pendown()
-    turt.right(90)
-    turt.forward(distance)
-    turt.right(90)
-    turt.forward(distance)
-    turt.right(90)
-    turt.forward(distance)
+    for movement in range(3):
+        turt.right(90)
+        turt.forward(distance)
     turt.left(90)
     turt.forward(distance)
     turt.left(90)
@@ -22,15 +16,9 @@ def draw2(turt):
 
 def draw3(turt):
     distance = .1
-    # turt.penup()
-    # turt.forward(.2)
-    # turt.pendown()
-    turt.right(90)
-    turt.forward(distance)
-    turt.right(90)
-    turt.forward(distance)
-    turt.right(90)
-    turt.forward(distance)
+    for movement in range(3):
+        turt.right(90)
+        turt.forward(distance)
     turt.left(180)
     turt.forward(distance)
     turt.right(90)
@@ -38,8 +26,23 @@ def draw3(turt):
     turt.right(90)
     turt.forward(distance)
 
-def draw4():
-    pass
+def draw4(turt):
+    distance = .1
+    for momvent in range(2):
+        turt.forward(-distance)
+        turt.left(90)
+    turt.forward(-distance)
+    turt.forward(distance * 2)
 
-def draw5():
-    pass
+def draw5(turt):
+    distance = .1
+    turt.right(90)
+    turt.forward(distance)
+    turt.forward(-distance)
+    turt.left(90)
+    turt.forward(-distance )
+    turt.penup()
+    turt.forward(-distance * 2)
+    turt.pendown()
+    turt.right(90)
+    turt.circle(distance,180)

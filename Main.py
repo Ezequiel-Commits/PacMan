@@ -6,6 +6,7 @@ import collisionManager
 import pacMan
 import sprite
 import numbers
+import time
 
 window  = None
 WINX, WINY = 1000,1000
@@ -34,6 +35,7 @@ def main():
         ["empty","pellet","wall","pellet"],
         ["empty","empty","empty","ghost"]
     ]
+    pacManDeaths = 0 #Should be a global variable that I can access in the updateModel function. 
     
     spriteList = []
     #Spawn in the pacMan turtle and ghost turtles, along with doing some customization for both 
@@ -41,25 +43,30 @@ def main():
     myPacMan.score = 0
     spriteList.append(myPacMan)
 
-    ghost = turtle.Turtle()
-    ghost.penup()
+    # A ghost should be able to become a sprite class as well. 
+    ghost = sprite.Sprite()
+    ghost = ghost.turt
     ghost.pencolor("blue")
-    ghost.ht()
 
     scoreTracker = sprite.Sprite()
+    scoreTracker = scoreTracker.turt
     
     def updateScore(score):
-        scoreTracker.turt.penup()
-        scoreTracker.turt.goto(3.5,3.5)
-        scoreTracker.turt.pendown()
-        scoreTracker.turt.setheading(90)
+        scoreTracker.penup()
+        scoreTracker.goto(3.5,3.5)
+        scoreTracker.pendown()
+        scoreTracker.setheading(90)
         # check the score parameter
         if score == 1:
-            numbers.draw1(scoreTracker.turt)
+            numbers.draw1(scoreTracker)
         elif score == 2:
-            numbers.draw2(scoreTracker.turt)
+            numbers.draw2(scoreTracker)
         elif score == 3:
-            numbers.draw3(scoreTracker.turt)
+            numbers.draw3(scoreTracker)
+        elif score == 4:
+            numbers.draw4(scoreTracker)
+        elif score == 5:
+            numbers.draw5(scoreTracker)
 
     pacManDirection = "none" # a global variable that will allow for player movement 
 
@@ -82,6 +89,7 @@ def main():
     """Functions to move both the player and the ghost"""
     def movePacMan(pacManX,pacManY): #Another condition to accomodate pellets?
         nonlocal pacManDirection
+        # print("got here")
         if pacManDirection == "Up": 
 
             #Move the player based on their input 
@@ -157,8 +165,12 @@ def main():
             if ghostY+1 > 3 or Maze[ghostX][ghostY+1] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
-            # elif Maze[ghostX][ghostY+1] == "pellet":
-            #     Maze[ghostX][ghostY+1] = "pellet"
+            elif Maze[ghostX][ghostY+1] == "pellet":
+                for turtle in window.turtles():
+                    turtle.clear()
+                Maze[ghostX][ghostY+1] = "ghost"
+                Maze[ghostX][ghostY] = "pellet"
+                return
             Maze[ghostX][ghostY+1] = "ghost"
         elif pacManY < ghostY:
 
@@ -166,14 +178,24 @@ def main():
             if ghostY-1 < 0 or Maze[ghostX][ghostY-1] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
                 return
-            # elif Maze[ghostX][ghostY+1] == "pellet":
-            #     Maze[ghostX][ghostY-1] = "pellet"
+            elif Maze[ghostX][ghostY-1] == "pellet":
+                for turtle in window.turtles():
+                    turtle.clear()
+                Maze[ghostX][ghostY-1] = "ghost"
+                Maze[ghostX][ghostY] = "pellet"
+                return
             Maze[ghostX][ghostY-1] = "ghost"
         elif pacManX > ghostX:
 
             Maze[ghostX][ghostY] = "empty"
             if ghostX+1 > 3 or Maze[ghostX+1][ghostY] == "wall": 
                 Maze[ghostX][ghostY] = "ghost"
+                return
+            elif Maze[ghostX+1][ghostY] == "pellet":
+                for turtle in window.turtles():
+                    turtle.clear()
+                Maze[ghostX+1][ghostY] = "ghost"
+                Maze[ghostX][ghostY] = "pellet"
                 return
             Maze[ghostX+1][ghostY] = "ghost"
         elif pacManX < ghostX:
@@ -183,25 +205,26 @@ def main():
                 Maze[ghostX][ghostY] = "ghost"
                 return
             elif Maze[ghostX-1][ghostY] == "pellet":
-                Maze[ghostX-1][ghostY] = "pellet"
-                # Not sure how to get around this issue. Even with lots of if statements(which would be bad code imo), I'm not sure I'd get it to work the way I want to. 
+                for turtle in window.turtles():
+                    turtle.clear()
+                Maze[ghostX-1][ghostY] = "ghost"
+                Maze[ghostX][ghostY] = "pellet"
                 return
             Maze[ghostX-1][ghostY] = "ghost"
 
     """Update the maze model based on player input """
     def updateModel():
         ghostX, ghostY, pacManX, pacManY = None, None, None, None
+        nonlocal pacManDeaths, Maze #Not sure why the nonlocal keyword is needed here. 
 
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pacMan":
-                    # Assign the x/y values here? 
                     pacManX = x
                     pacManY = y 
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost":
-                    # print(x,y)
                     ghostX = x
                     ghostY = y
         
@@ -209,6 +232,28 @@ def main():
         # the move function should not run for that character. 
         if pacManX != None and pacManY != None:
             movePacMan(pacManX,pacManY)
+        
+        if pacManX == None and pacManY == None:
+            pacManDeaths += 1
+            if pacManDeaths == 3:
+                # THe problems lies in this nested if statement. 
+                Answer = window.textinput("Game Over","Would you like to play again? Respond 'Yes' or 'No'")
+                if Answer == "Yes":
+                    pacManDeaths = 0
+                    pass # Means the maze should reset and the screen should return to it's original state on being opened. 
+                elif Answer == "No":
+                    window.bye()
+                elif Answer != "No" and Answer != "Yes":
+                    # An answer not accepted was passed. Close the window
+                    window.bye()
+            # Something's going on that's not allowing the game to loop properly. 
+            Maze = [
+                #4 by 4 list to reset to 
+                ["pacMan","pellet","empty","empty"],
+                ["empty","empty","wall","empty"],
+                ["empty","pellet","wall","pellet"],
+                ["empty","empty","empty","ghost"]
+            ]   
         
         if ghostX != None and ghostY != None and pacManX != None and pacManY != None:
             moveGhost(ghostX,ghostY,pacManX,pacManY)
@@ -244,8 +289,6 @@ def main():
                     newPellet = pellet.Pellet(x,y)
                     newPellet.move()
                     newPellet.updateSelf()
-                    
-                    # When are the pellets deleted? Am I overadding pellets? 
         turtle.update()
 
     """animate the screen using a model-view paradigm """
@@ -254,10 +297,6 @@ def main():
         # 1. clear the current frame
         myPacMan.undraw() 
         ghost.clear() # The ghost.turtle sprite stays
-
-        # 4. check for collisions
-        checkForCollisions = collisionManager.CollisionManager(spriteList)
-        checkForCollisions.checkCollisions()
 
         # 2. update the model -- i.e. in memory state of the game via the 2d list
         updateModel()
@@ -272,6 +311,7 @@ def main():
 
     """A function to print out the maze layout"""
     def printMaze():
+        # Doesn't work after the first loop for some reason. 
         print(Maze)
 
 

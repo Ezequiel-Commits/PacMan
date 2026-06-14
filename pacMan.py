@@ -3,10 +3,10 @@ import turtle
 import sprite
 
 class PacMan(sprite.Sprite):
-    def __init__(self, size = 20):
+    def __init__(self, size = 20, pencolour = "yellow"):
         # Use the superClass constructor, with some changes.
         sprite.Sprite.__init__(self, size)
-        self.turt.pencolor("yellow")
+        self.turt.pencolor(pencolour)
         self.x = self.turt.xcor()
         self.y = self.turt.ycor()
     
