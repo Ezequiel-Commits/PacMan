@@ -86,8 +86,8 @@ def main():
         pacManDirection = "Left"
 
 
-    """Functions to move both the player and the ghost"""
     def movePacMan(pacManX,pacManY): #Another condition to accomodate pellets?
+        """Functions to move both the player and the ghost"""
         nonlocal pacManDirection
         # print("got here")
         if pacManDirection == "Up": 
@@ -156,8 +156,9 @@ def main():
                 pass
             Maze[pacManX-1][pacManY] = "pacMan"
 
-    """Move the ghost based on the pacMan's location"""
-    def moveGhost(ghostX,ghostY,pacManX,pacManY): #Another condition to accomodate pellets? 
+    def moveGhost(ghostX,ghostY,pacManX,pacManY): 
+        """Move the ghost based on the pacMan's location"""
+        # If I wanted to implement a BFS, it would take place in here, no? Creating a seperate branch might be to my benefit. 
         if pacManY > ghostY:
 
             #If the player is above the ghost...
@@ -212,22 +213,25 @@ def main():
                 return
             Maze[ghostX-1][ghostY] = "ghost"
 
-    """Update the maze model based on player input """
     def updateModel():
+        """Update the maze model based on player input"""
         ghostX, ghostY, pacManX, pacManY = None, None, None, None
-        nonlocal pacManDeaths, Maze #Not sure why the nonlocal keyword is needed here. 
+        nonlocal pacManDeaths, Maze, pacManDirection
 
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "pacMan":
+                    # Assign the x/y values here? 
                     pacManX = x
                     pacManY = y 
+                    # print(Maze)
         for x in range(4):
             for y in range(4):
                 if Maze[x][y] == "ghost":
+                    # print(x,y)
                     ghostX = x
                     ghostY = y
-        
+
         # If the pacMan has collided with a ghost, one of their coordinates should be wiped, and 
         # the move function should not run for that character. 
         if pacManX != None and pacManY != None:
@@ -235,31 +239,29 @@ def main():
         
         if pacManX == None and pacManY == None:
             pacManDeaths += 1
-            if pacManDeaths == 3:
-                # THe problems lies in this nested if statement. 
-                Answer = window.textinput("Game Over","Would you like to play again? Respond 'Yes' or 'No'")
+            if pacManDeaths == 1:
+                Answer = turtle.textinput("Game Over","Would you like to play again? Respond 'Yes' or 'No'")
                 if Answer == "Yes":
                     pacManDeaths = 0
-                    pass # Means the maze should reset and the screen should return to it's original state on being opened. 
+                    window.listen() #This seems to fix it for some reason? 
+                    # pass 
                 elif Answer == "No":
                     window.bye()
-                elif Answer != "No" and Answer != "Yes":
-                    # An answer not accepted was passed. Close the window
+                else:
                     window.bye()
-            # Something's going on that's not allowing the game to loop properly. 
             Maze = [
                 #4 by 4 list to reset to 
                 ["pacMan","pellet","empty","empty"],
                 ["empty","empty","wall","empty"],
                 ["empty","pellet","wall","pellet"],
                 ["empty","empty","empty","ghost"]
-            ]   
-        
-        if ghostX != None and ghostY != None and pacManX != None and pacManY != None:
+            ]   #Trying to implement a breath-first search for the ghosts. 
+
+        if ghostX != None and ghostY != None and pacManX != None and pacManY != None: # The ghost moves based on the position of the PacMan. 
             moveGhost(ghostX,ghostY,pacManX,pacManY)
 
-    """Draw the current frame""" 
     def render():
+        """Draw the current frame""" 
         # render all sprites in the game 
         nonlocal Maze
         # render pacMan
@@ -291,8 +293,8 @@ def main():
                     newPellet.updateSelf()
         turtle.update()
 
-    """animate the screen using a model-view paradigm """
     def animate():
+        """animate the screen using a model-view paradigm """
 
         # 1. clear the current frame
         myPacMan.undraw() 
@@ -309,9 +311,8 @@ def main():
 
     animate()
 
-    """A function to print out the maze layout"""
     def printMaze():
-        # Doesn't work after the first loop for some reason. 
+        # Should work after the window.listen line
         print(Maze)
 
 
@@ -322,7 +323,7 @@ def main():
     window.onkeypress(pacManDirectionLeft, key = "Left")
     window.onkeypress(printMaze, key = "t")
     # Listen for player input 
-    window.listen()
+    window.listen() #Listening for t no longer occurs after the first loop. Same for all the other functions. 
 
     window.mainloop()
 
